@@ -1,17 +1,21 @@
 // Service Worker
 
+// Include DBHelper function for fetching restaurants and putting in indexedDB
+self.importScripts('js/dbhelper.js');
+
 // Data
-var myCache = "restauarantReview_100";
+var myCache = "restauarantReview_001";
 var cacheFiles = [
   '/index.html',
   '/restaurant.html',
   '/css/styles.css',
   '/data/restaurants.json',
-  //"/img/",
+  '/img/',
   '/js/dbhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
-  '/js/swregister.js' 
+  '/js/swregister.js' ,
+  '/js/idb.js'
 ];
 
 // Event Listener for install - caching the files
@@ -30,7 +34,7 @@ self.addEventListener("install", function(event) {
 });
 
 
-// Event Lstener for fetch - pull friles from cache and update with fetch is possible
+// Event Lstener for fetch - pull files from cache and update with fetch is possible
 self.addEventListener('fetch', function(event) {
   //console.log('In eventListener for fetch, event: ', event)
 
@@ -47,4 +51,22 @@ self.addEventListener('fetch', function(event) {
       })
     })
   );
+});
+
+// Event Listener for activate - 
+self.addEventListener('activate', event => {
+  DBHelper.fetchRestaurants((error, restaurants) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      // Could use switch statement here to update IDB. Curretn Data set is static, needs just one init/.
+      idb.open('restaurantReviews', 1, upgradeDB => {
+        // If not there already, add restaurant data
+        if(!upgradeDB.objectStroeNAmes.contains('restaurantData')) {
+          let objStore = upgradeDB.createObjectStore('restaurantData', {keyPath: 'id'});
+          for (restaurant in restaurants) objStore.add(restaurant);
+        }
+      });
+    }
+  });
 });
