@@ -1,0 +1,14 @@
+{
+    "short_name": "FoodReviews",
+    "name": "Restaurant Reviews",
+    "description": "Restaurant Reviews App - Part of the Udacity Mobile Web Soecialist Nano-Degree",
+    "start_url": "index.html",
+    "theme_color": "orange",
+    "background_color": "#252831",
+    "display": "fullscreen",
+    "icons": [
+      { "src": "img/icons/rr-icon-192.png", "type": "image/png", "sizes": "192x192" },
+      { "src": "img/icons/rr-icon-512.png", "type": "image/png", "sizes": "512x512" }
+    ]
+  }
+  

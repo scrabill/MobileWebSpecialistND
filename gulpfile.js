@@ -10,24 +10,29 @@ var webp 		= require('gulp-webp');
 var htmlmin		= require('gulp-htmlmin');
 var cleancss	= require('gulp-clean-css');
 var browserSync	= require('browser-sync').create();
+var del 		= require('del');
 
 // Watch
-gulp.task('watch', function() {
+gulp.task('watch', () => {
 	var reload = browserSync.reload
 	// JS
-	gulp.watch('app/sw.js', ['sw', reload]);
-	gulp.watch('app/js/*.js', ['scripts', reload]);
+	gulp.watch('app/sw.js', 	['sw', reload]);
+	gulp.watch('app/js/*.js', 	['scripts', reload]);
 	// Images
 	gulp.watch('app/img/*.jpg', ['images', reload]);
 	// HTML
-	gulp.watch('app/*.html', ['html', reload]);
+	gulp.watch('app/*.html', 	['html', reload]);
 	// CSS
 	gulp.watch('app/css/styles.css', ['css', reload]);
-
-})
+	// Manifest
+	gulp.watch('app/manifest.json', ['manifest', reload]);
+	// Icons
+	gulp.watch(['app/favicon.ico','app/apple-touch-icon.png'], ['icons-main', reload]);
+	gulp.watch('app/img/icons/*',  ['icons-folder', reload]);
+});
 
 // Serve
-gulp.task('serve', ['build'], function() {
+gulp.task('serve', ['build'], () => {
 	browserSync.init({
 		notify: false,
 		port: 8080,
@@ -35,17 +40,16 @@ gulp.task('serve', ['build'], function() {
 			baseDir: ["dist"]
 		}
 	})
-})
-
+});
 
 // Minify JS
-gulp.task('sw', function() {
+gulp.task('sw', () => {
 	return gulp.src('app/sw.js')
 		.pipe(uglify())
 		.pipe(gulp.dest('dist'));
 });
 
-gulp.task('scripts', function() {
+gulp.task('scripts', () => {
 	return gulp.src('app/js/*.js')
 		// .pipe(babel())
 		.pipe(uglify())
@@ -56,7 +60,7 @@ gulp.task('scripts', function() {
 });
 
 // Optimize images
-gulp.task('images', function() {
+gulp.task('images', () => {
 	return gulp.src('app/img/*.jpg')
 		.pipe(cache(imagemin( {
 			optimizationLevel: 5, progressive: true, interlaced: true
@@ -66,25 +70,60 @@ gulp.task('images', function() {
 });
 
 // Minify HTML
-gulp.task('html', function() {
+gulp.task('html', () => {
 	return gulp.src('app/*.html')
 		.pipe(htmlmin( { 
 			removeComments: true, collapseWhitespace: true 
 		}))
 		.pipe(gulp.dest('dist'));
-})
+});
 
 // Clean CSS
-gulp.task('css', function() {
+gulp.task('css', () => {
 	return gulp.src('app/css/styles.css')
 		.pipe(cleancss())
 		.pipe(gulp.dest('dist/css'));
-})
+});
+
+// Move over remaining files to dist
+gulp.task('manifest', () => {
+	return gulp.src('app/manifest.json')
+		.pipe(gulp.dest('dist'));
+});
+
+gulp.task('icons-main', () => {
+	return gulp.src(['app/favicon.ico','app/apple-touch-icon.png'])
+		.pipe(gulp.dest('dist'));
+});
+
+gulp.task('icons-folder', () => {
+	return gulp.src('app/img/icons/*')
+		.pipe(gulp.dest('dist/img/icons'));
+});
 
 // Build - just for building app for dist
 // *** NEEDS Manifest and icon tasks
-gulp.task('build', ['sw', 'scripts', 'images', 'html', 'css'])
+gulp.task('build', [
+	'sw', 
+	'scripts', 
+	'images', 
+	'html', 
+	'css', 
+	'manifest', 
+	'icons-main', 
+	'icons-folder'
+]);
 
 // Dev task - Builds for dist, spinns up server and actvates watch 
 // for continuous update during dev.
 gulp.task('dev', ['serve', 'watch']);
+
+// Clean out dist folder
+gulp.task('clean-dist', () => {
+	return del.sync('dist');
+});
+
+// Clean out image cahce
+gulp.task('cache-clear', (callback) => {
+	return cache.clearAll(callback);
+});
