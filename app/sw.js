@@ -9,7 +9,6 @@ var cacheFiles = [
   '/index.html',
   '/restaurant.html',
   '/css/styles.css',
-  //'/data/restaurants.json',
   '/img/',
   '/js/dbhelper.js',
   '/js/main.js',
@@ -21,7 +20,7 @@ var cacheFiles = [
 // Event Listener for install - caching the files
 self.addEventListener("install", function(event) {
 
-  console.log('In eventListener for install, event: ', event)
+  //console.log('In eventListener for install, event: ', event)
   event.waitUntil(caches.open(myCache).then(function(cache) {
 
     return cache.addAll(cacheFiles)

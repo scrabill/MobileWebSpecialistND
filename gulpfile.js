@@ -51,7 +51,6 @@ gulp.task('sw', () => {
 
 gulp.task('scripts', () => {
 	return gulp.src('app/js/*.js')
-		// .pipe(babel())
 		.pipe(uglify())
 		// .on('error', function (err) { 
 		// 	gutil.log(gutil.colors.red('[Error]'), err.toString()); 
@@ -102,7 +101,6 @@ gulp.task('icons-folder', () => {
 });
 
 // Build - just for building app for dist
-// *** NEEDS Manifest and icon tasks
 gulp.task('build', [
 	'sw', 
 	'scripts', 
