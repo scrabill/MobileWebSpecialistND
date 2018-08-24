@@ -1,7 +1,7 @@
 let restaurant;
 var map;
 
-/**
+/*
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
@@ -20,7 +20,7 @@ window.initMap = () => {
   });
 }
 
-/**
+/*
  * Get current restaurant from page URL.
  */
 fetchRestaurantFromURL = (callback) => {
@@ -45,7 +45,7 @@ fetchRestaurantFromURL = (callback) => {
   }
 }
 
-/**
+/*
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -57,10 +57,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
-  image.src = `/img/${restaurant.id}@1x.jpg`;
-  image.srcset = `/img/${restaurant.id}@1x.jpg 300w,
-                  /img/${restaurant.id}@2x.jpg 600w,
-                  /img/${restaurant.id}@3x.jpg 900w`;
+  image.src = `/img/${restaurant.id}@1x.webp`;
+  image.srcset = `/img/${restaurant.id}@1x.webp 300w,
+                  /img/${restaurant.id}@2x.webp 600w,
+                  /img/${restaurant.id}@3x.webp 900w`;
   image.alt = restaurant.alt_text;
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -74,7 +74,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   fillReviewsHTML();
 }
 
-/**
+/*
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
 fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
@@ -94,7 +94,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
-/**
+/*
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
@@ -116,7 +116,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   container.appendChild(ul);
 }
 
-/**
+/*
  * Create review HTML and add it to the webpage.
  */
 createReviewHTML = (review) => {
@@ -154,7 +154,7 @@ createReviewHTML = (review) => {
   return li;
 }
 
-/**
+/*
  * Add restaurant name to the breadcrumb navigation menu
  */
 fillBreadcrumb = (restaurant=self.restaurant) => {
@@ -167,7 +167,7 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   breadcrumb.appendChild(li);
 }
 
-/**
+/*
  * Get a parameter by name from page URL.
  */
 getParameterByName = (name, url) => {

@@ -1,10 +1,10 @@
-/**
+/* 
  * Common database helper functions.
  */
 
 class DBHelper {
  
-  /**
+  /* 
    * Database URL.
    * Change this to restaurants   location on your server.
    */
@@ -13,7 +13,7 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
-  /**
+  /* 
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
@@ -43,24 +43,8 @@ class DBHelper {
         });
       });
     }
-  
 
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', DBHelper.DATABASE_URL);
-    // xhr.onload = () => {
-    //   if (xhr.status === 200) { // Got a success response from server!
-    //     const json = JSON.parse(xhr.responseText);
-    //     const restaurants = json.restaurants;
-    //     callback(null, restaurants);
-    //   } else { // Oops!. Got an error from server.
-    //     const error = (`Request failed. Returned status of ${xhr.status}`);
-    //     callback(error, null);
-    //   }
-    // };
-    // xhr.send();
-  
-
-  /**
+  /* 
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -79,7 +63,7 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
@@ -95,7 +79,7 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Fetch restaurants by a neighborhood with proper error handling.
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
@@ -111,7 +95,7 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
@@ -132,14 +116,14 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Fetch all neighborhoods with proper error handling.
    */
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null);
+        callback(error, null); 
       } else {
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
@@ -150,7 +134,7 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Fetch all cuisines with proper error handling.
    */
   static fetchCuisines(callback) {
@@ -168,21 +152,21 @@ class DBHelper {
     });
   }
 
-  /**
+  /*
    * Restaurant page URL.
    */
-  static urlForRestaurant(restaurant) {
+  static urlForRestaurant(restaurant) { 
     return (`./restaurant.html?id=${restaurant.id}`);
   }
 
-  /**
+  /*
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
     return (`/img/${restaurant.photograph}`);
   }
 
-  /**
+  /*
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
