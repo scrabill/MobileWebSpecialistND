@@ -1,15 +1,15 @@
 // Service Worker
 
 // Include DBHelper function for fetching restaurants and putting in indexedDB
-self.importScripts('js/dbhelper.js');
+self.importScripts('js/dbhelper.js', 'js/idb.js');
 
 // Data
-var myCache = "restauarantReview_001";
+var myCache = "restaurantReview_050";
 var cacheFiles = [
   '/index.html',
   '/restaurant.html',
   '/css/styles.css',
-  '/data/restaurants.json',
+  //'/data/restaurants.json',
   '/img/',
   '/js/dbhelper.js',
   '/js/main.js',
@@ -21,11 +21,11 @@ var cacheFiles = [
 // Event Listener for install - caching the files
 self.addEventListener("install", function(event) {
 
-  //console.log('In eventListener for install, event: ', event)
+  console.log('In eventListener for install, event: ', event)
   event.waitUntil(caches.open(myCache).then(function(cache) {
 
     return cache.addAll(cacheFiles)
-      //.then( function() { console.log('Cache worked'); } )
+      .then( function() { console.log('Cache worked'); } )
       .catch(function(error) {
 
         console.log("Caching failed, error: ", error);
@@ -55,6 +55,7 @@ self.addEventListener('fetch', function(event) {
 
 // Event Listener for activate - 
 self.addEventListener('activate', event => {
+  console.log("Event trigger - activate");
   DBHelper.fetchRestaurants((error, restaurants) => {
     if (error) {
       callback(error, null);
@@ -62,9 +63,10 @@ self.addEventListener('activate', event => {
       // Could use switch statement here to update IDB. Curretn Data set is static, needs just one init/.
       idb.open('restaurantReviews', 1, upgradeDB => {
         // If not there already, add restaurant data
-        if(!upgradeDB.objectStroeNAmes.contains('restaurantData')) {
+        if(!upgradeDB.objectStoreNames.contains('restaurantData')) {
           let objStore = upgradeDB.createObjectStore('restaurantData', {keyPath: 'id'});
-          for (restaurant in restaurants) objStore.add(restaurant);
+          console.log(restaurants);
+          restaurants.map(restaurant => objStore.add(restaurant));
         }
       });
     }
