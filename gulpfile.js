@@ -112,7 +112,7 @@ gulp.task('build', [
 	'icons-folder'
 ]);
 
-// Dev task - Builds for dist, spinns up server and actvates watch 
+// Dev task - Builds for dist, spins up server and activates watch 
 // for continuous update during dev.
 gulp.task('dev', ['serve', 'watch']);
 

@@ -128,6 +128,18 @@ nav h1 a {
 	display: none;
 }
 
+.favButton {
+  background-image: none;
+  outline: 0;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.favSpan {
+  font-size: 20pt;
+}
+
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
   background-color: #f3f3f3;

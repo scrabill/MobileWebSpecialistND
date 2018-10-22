@@ -151,6 +151,17 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  // Inserting favorite here
+  const favButton = document.createElement('button');
+  favButton.className = 'favButton';
+  favButton.onclick = event => favoriteClicked(restaurant, favButton);
+  const favSpan = document.createElement('span');
+  favSpan.className = 'favSpan';
+  favSpan.innerHTML = '&#9825;' // Not favorite
+  // code for favorite: &#9829;
+  favButton.appendChild(favSpan);
+  li.append(favButton);
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
@@ -165,6 +176,10 @@ createRestaurantHTML = (restaurant) => {
   li.append(more)
 
   return li
+}
+
+favoriteClicked = (restaurant, button) => {
+  
 }
 
 /*

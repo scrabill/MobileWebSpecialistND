@@ -4,7 +4,7 @@ Capstone project for Udacity's **Mobile Web Specialist Nano-Degree**, part of th
 
 ---
 
-## Current State / Branch : Phase 2
+## Current State / Branch : Phase 3, Final
 
 Rubric requirements for this stage of the project include:
 
