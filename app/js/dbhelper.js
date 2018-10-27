@@ -121,11 +121,12 @@ class DBHelper {
    */
   static fetchReviewsByRestaurantID(id) {
     return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`).then(response => {
-      if (!response.ok) return Promise.reject("Fetching reviews by IDfailed.");
+      if (!response.ok) return Promise.reject("Fetching reviews by ID failed.");
       return response.json();
     }).then(fetchedReviews => {
       // If fetch successful
       // TODO: store reviews on idb
+      console.log(fetchedReviews);
       return fetchedReviews;
     }).catch(error => {
       // Error handling
