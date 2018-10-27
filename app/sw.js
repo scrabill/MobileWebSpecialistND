@@ -4,7 +4,7 @@
 self.importScripts('js/dbhelper.js', 'js/idb.js');
 
 // Data
-var myCache = "restaurantReview_050";
+var myCache = "restaurantReview_311";
 var cacheFiles = [
   '/index.html',
   '/restaurant.html',

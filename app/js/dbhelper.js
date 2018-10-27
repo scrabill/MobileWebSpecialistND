@@ -10,7 +10,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /* 
@@ -18,7 +18,7 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
     // Fetch restaurant data from server
-    fetch(DBHelper.DATABASE_URL)
+    fetch(`${DBHelper.DATABASE_URL}/restaurants`)
       .then(function(response) {
         // If response returns ok, return json of restaurant data
         if (response.ok) return response.json();
@@ -113,6 +113,25 @@ class DBHelper {
         }
         callback(null, results);
       }
+    });
+  }
+
+  /*
+   * Fetch reviews by restaurant ID
+   */
+  static fetchReviewsByRestaurantID(id) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`).then(response => {
+      if (!response.ok) return Promise.reject("Fetching reviews by IDfailed.");
+      return response.json();
+    }).then(fetchedReviews => {
+      // If fetch successful
+      // TODO: store reviews on idb
+      return fetchedReviews;
+    }).catch(error => {
+      // Error handling
+      // TODO: try to get reviews from idb
+      console.log(`Error in fetch reviews by ID: ${error}`);
+      return null;
     });
   }
 
