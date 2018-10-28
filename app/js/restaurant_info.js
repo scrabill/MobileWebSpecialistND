@@ -52,6 +52,18 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  // Inserting favorite here
+  const favButton = document.createElement('button');
+  favButton.className = 'favButton';
+  let isFavorite = (restaurant.is_favorite && restaurant.is_favorite.toString() === "true") ? true : false;
+  console.log(`${restaurant.name}, ${restaurant.is_favorite}`);
+  favButton.setAttribute('aria-pressed', isFavorite);
+  favButton.setAttribute('aria-label', `Make ${restaurant.name} a favorite!`);
+  favButton.innerHTML = isFavorite ? '&#9829;' : '&#9825;'; 
+  favButton.onclick = event => favoriteClicked(restaurant, favButton);
+
+  name.appendChild(favButton);
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
@@ -74,6 +86,26 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   console.log(`In fillRestaurantHTML, about to call fetch then fill with id: ${restaurant.id}`);
   DBHelper.fetchReviewsByRestaurantID(restaurant.id)
     .then(fillReviewsHTML);
+}
+
+favoriteClicked = (restaurant, button) => {
+  console.log(`Data: ${restaurant.name}, ${restaurant.is_favorite}, ${button}`);
+  console.log(`favClicked. Entering state: ${button.getAttribute("aria-pressed")}`);
+  //TODO: use background sync to sync data with API server
+  let fav = (button.getAttribute("aria-pressed") && button.getAttribute("aria-pressed") === "true") ? true : false;
+  return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${!fav}`, {method: 'PUT'})
+    .then(response => {
+      if(!response.ok) return Promise.reject("Favorite could not be updated.");
+      return response.json();
+    }).then(updatedRestaurant => {
+      // TODO : Update restaurant on idb
+
+      // change state of toggle button
+      console.log(`Exiting state: ${!fav}`);
+      button.setAttribute('aria-pressed', !fav);
+      button.innerHTML = !fav ? '&#9829;' : '&#9825;'; 
+      button.onclick = event => favoriteClicked(restaurant, button);
+    });
 }
 
 /*
@@ -106,6 +138,12 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
+  const addReview = document.createElement('button');
+  addReview.innerHTML = 'Add a Review';
+  addReview.id = "reviewButton";
+  addReview.onclick = addReviewForm;
+  container.appendChild(addReview);
+
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -117,6 +155,81 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+}
+
+addReviewForm = () => {
+  let addReviewButton = document.getElementById("reviewButton");
+  addReviewButton.style.display = "none";
+  const reviewList = document.getElementById('reviews-list');
+  reviewList.appendChild(reviewForm());
+  document.getElementById("name").focus();
+
+}
+
+reviewForm = () => {
+  let formContainer = document.createElement('li');
+  let form = document.createElement('form');
+  form.id = "reviewForm";
+
+  let title = document.createElement('p');
+  title.innerHTML = "New Review";
+  title.id = "reviewer-name";
+  form.appendChild(title);
+
+  let p = document.createElement('p');
+  let name = document.createElement('input');
+  let nameLabel = document.createElement('label');
+  nameLabel.setAttribute('for', 'name');
+  nameLabel.innerHTML = 'First Name: '; 
+  name.id = "name"
+  name.setAttribute('type', 'text');
+  p.appendChild(nameLabel);
+  p.appendChild(name);
+  form.appendChild(p);
+
+  p = document.createElement('p');
+  let selectLabel = document.createElement('label');
+  selectLabel.setAttribute('for', 'rating');
+  selectLabel.innerText = "Your rating: ";
+  p.appendChild(selectLabel);
+  let select = document.createElement('select');
+  select.id = "rating";
+  select.name = "rating";
+  select.classList.add('rating');
+  ["--", 1,2,3,4,5].forEach(number => {
+    const option = document.createElement('option');
+    option.value = number;
+    option.innerHTML = number;
+    if (number === "--") option.selected = true;
+    select.appendChild(option);
+  });
+  p.appendChild(select);
+  form.appendChild(p);
+
+  p = document.createElement('p');
+  let comments = document.createElement('textarea');
+  let commentsLabel = document.createElement('label');
+  commentsLabel.setAttribute('for', 'comments');
+  commentsLabel.innerHTML = 'Comments: ';
+  comments.id = "comments";
+  comments.setAttribute('rows', '10');
+  p.appendChild(commentsLabel);
+  p.appendChild(comments);
+  p.style.display = "flex";
+  p.style.alignItems = "center";
+  form.appendChild(p);
+
+  p = document.createElement('p');
+  let submitButton = document.createElement('button');
+  submitButton.id = "submitReview";
+  submitButton.setAttribute('type', 'submit');
+  submitButton.innerHTML = "Submit Review";
+  p.appendChild(submitButton);
+  form.appendChild(p);
+
+  //form.onsubmit = handleSubmit;
+  formContainer.appendChild(form);
+  return formContainer;
 }
 
 /*

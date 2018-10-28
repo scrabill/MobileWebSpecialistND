@@ -54,7 +54,6 @@ nav {
   line-height: 2em;
   background-color: #252831;
   text-align:center;
-  /*max-width:900px;*/
 }
 nav h1 {
   margin: auto;
@@ -130,14 +129,12 @@ nav h1 a {
 
 .favButton {
   background-image: none;
-  outline: 0;
   border: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  font-size: 20pt;
 }
 
-.favSpan {
-  font-size: 20pt;
+.favSpan[aria-pressed=true] {
+  color : orange;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -263,6 +260,19 @@ nav h1 a {
   padding-top: 5px;
   line-height:1.5em;
 }
+#reviewButton, #submitReview {
+  background-color: #252831;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  font-size: 12pt;
+  margin: 0 auto;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+}
 #reviews-list {
   padding:0px;
 }
@@ -296,7 +306,13 @@ nav h1 a {
   width: 100%;
   border-radius: 10px 0px 0px 0px;
 }
-#reviewer-comments {
+#reviewer-comments, input {
   padding-left: 15px;
   padding-right: 15px;
 }
+
+label {
+  padding : 10px;
+}
+
+

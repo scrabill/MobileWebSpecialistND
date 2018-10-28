@@ -1,3 +1,4 @@
+
 let restaurants,
   neighborhoods,
   cuisines
@@ -154,12 +155,13 @@ createRestaurantHTML = (restaurant) => {
   // Inserting favorite here
   const favButton = document.createElement('button');
   favButton.className = 'favButton';
+  let isFavorite = (restaurant.is_favorite && restaurant.is_favorite.toString() === "true") ? true : false;
+  console.log(`${restaurant.name}, ${restaurant.is_favorite}`);
+  favButton.setAttribute('aria-pressed', isFavorite);
+  favButton.setAttribute('aria-label', `Make ${restaurant.name} a favorite!`);
+  favButton.innerHTML = isFavorite ? '&#9829;' : '&#9825;'; 
   favButton.onclick = event => favoriteClicked(restaurant, favButton);
-  const favSpan = document.createElement('span');
-  favSpan.className = 'favSpan';
-  favSpan.innerHTML = '&#9825;' // Not favorite
-  // code for favorite: &#9829;
-  favButton.appendChild(favSpan);
+
   li.append(favButton);
 
   const neighborhood = document.createElement('p');
@@ -179,7 +181,23 @@ createRestaurantHTML = (restaurant) => {
 }
 
 favoriteClicked = (restaurant, button) => {
-  
+  console.log(`Data: ${restaurant.name}, ${restaurant.is_favorite}, ${button}`);
+  console.log(`favClicked. Entering state: ${button.getAttribute("aria-pressed")}`);
+  //TODO: use background sync to sync data with API server
+  let fav = (button.getAttribute("aria-pressed") && button.getAttribute("aria-pressed") === "true") ? true : false;
+  return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${!fav}`, {method: 'PUT'})
+    .then(response => {
+      if(!response.ok) return Promise.reject("Favorite could not be updated.");
+      return response.json();
+    }).then(updatedRestaurant => {
+      // TODO : Update restaurant on idb
+
+      // change state of toggle button
+      console.log(`Exiting state: ${!fav}`);
+      button.setAttribute('aria-pressed', !fav);
+      button.innerHTML = !fav ? '&#9829;' : '&#9825;'; 
+      button.onclick = event => favoriteClicked(restaurant, button);
+    });
 }
 
 /*
