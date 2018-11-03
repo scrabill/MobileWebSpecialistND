@@ -3,27 +3,30 @@
  */
 // Change this to your server port
 const port = 1337;
-const dbPromise = idb.open('restaurantReviews', 3, upgradeDb => {
-  switch(upgradeDb.oldVersion) {
+const dbPromise = idb.open("restaurantReviews", 3, upgradeDb => {
+  switch (upgradeDb.oldVersion) {
     case 0: upgradeDb.createObjectStore("restaurantData", {keyPath: "id"});
+      break;
     case 1: upgradeDb.createObjectStore("reviewData",     {keypath: "id"}).createIndex("restaurant_id", "restaurant_id");
+      break;
     case 2: upgradeDb.createObjectStore("updateData",     {keyPath: "id", autoIncrement: true});
+      break;
   }
 });
 
-/* 
+/*
  * Common database helper functions.
  */
 class DBHelper {
- 
-  /* 
+
+  /*
    * Database URLs.
    */
   static get DATABASE_URL() { return `http://localhost:${port}/restaurants`;  }
 
   static get DATABASE_URL_REVIEWS() { return `http://localhost:${port}/reviews`;  }
 
-  /* 
+  /*
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
@@ -35,7 +38,7 @@ class DBHelper {
       .then(function(response) {
         // If response returns ok, return json of restaurant data
         if (response.ok) return response.json();
-        
+
         // If not returned, there is an error - or offline mode
         // throw new Error("Fetch response Error in fetchRestaurants");
       })
@@ -57,7 +60,7 @@ class DBHelper {
       });
     }
 
-  /* 
+  /*
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -138,7 +141,7 @@ class DBHelper {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
-        callback(error, null); 
+        callback(error, null);
       } else {
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
@@ -170,7 +173,7 @@ class DBHelper {
   /*
    * Restaurant page URL.
    */
-  static urlForRestaurant(restaurant) { 
+  static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
 
@@ -231,7 +234,7 @@ class DBHelper {
 
     // Update all restaurant data
     dbPromise.then(function(db) {
-      //let restaurantStore = 
+      //let restaurantStore =
       db.transaction("restaurantData", "readwrite").objectStore("restaurantData").get("-1")
         .then(function(value) {
           if(!value) {
@@ -288,8 +291,8 @@ class DBHelper {
   }
 
   /*
-   * Function to update data being held in idb for updates, store: updateData   
-   * Updated data is put in this store regardless of on/off-line status. 
+   * Function to update data being held in idb for updates, store: updateData
+   * Updated data is put in this store regardless of on/off-line status.
    */
   static addToUpdateQueue(url, method, update) {
     console.log(`In addToUpdateQueue - url: ${url}, method: ${method}, update: ${update}`);
@@ -316,10 +319,10 @@ class DBHelper {
           // No updates, so get outta here!
           if(!cursor) return;
           let update    = cursor.value.data;
-          
+
           // check for bad records? See in testing
 
-          let params  = { body: JSON.stringify(update.body), method: update.method }; 
+          let params  = { body: JSON.stringify(update.body), method: update.method };
 
           fetch(update.url, params)
             .then(function(response) {

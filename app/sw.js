@@ -3,7 +3,7 @@
  */
 
 // Include DBHelper functions for fetching restaurants and putting in indexedDB
-self.importScripts('./js/dbhelper.js', './js/idb.js');
+// self.importScripts('./js/dbhelper.js', './js/idb.js');
 
 // Cache Information
 var myCache     = 'restaurantReview_301';
@@ -20,15 +20,15 @@ var cacheFiles  = [
 ];
 
 // IDB Information
-const dbPromise = idb.open('restaurantReviews', 3, upgradeDb => {
-  switch(upgradeDb.oldVersion) {
-    case 0: upgradeDb.createObjectStore('restaurantData', {keyPath: 'id'});
-    case 1: upgradeDb.createObjectStore('reviewData',     {keypath: 'id'}).createIndex('restaurant_id', 'restaurant_id');
-    case 2: upgradeDb.createObjectStore('updateData',     {keyPath: 'id', autoIncrement: true});
-  }
-});
+// const dbPromise = idb.open('restaurantReviews', 3, upgradeDb => {
+//   switch(upgradeDb.oldVersion) {
+//     case 0: upgradeDb.createObjectStore('restaurantData', {keyPath: 'id'});
+//     case 1: upgradeDb.createObjectStore('reviewData',     {keypath: 'id'}).createIndex('restaurant_id', 'restaurant_id');
+//     case 2: upgradeDb.createObjectStore('updateData',     {keyPath: 'id', autoIncrement: true});
+//   }
+// });
 
-/* 
+/*
  * Event Listener for install - caching the files
  */
 self.addEventListener('install', function(event) {
@@ -128,7 +128,7 @@ function apiFetch(event, id) {
 
 function cacheFetch(event, request) {
   console.log(`In cacheFetch - event: ${event} request: ${request}`);
-  // Check the cache before fetching. 
+  // Check the cache before fetching.
   // If fetched, store in the cache.
   event.respondWith(caches.match(request))
     .then(function(response) {
@@ -146,8 +146,8 @@ function cacheFetch(event, request) {
     })
 }
 
-// /* 
-//  * Event Listener for activate 
+// /*
+//  * Event Listener for activate
 //  */
 // self.addEventListener('activate', event => {
 //   console.log('Event trigger - activate');
