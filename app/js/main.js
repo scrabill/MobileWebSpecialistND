@@ -1,15 +1,13 @@
-let restaurants,
-  neighborhoods,
-  cuisines
-var map
-var markers = []
+let restaurants, neighborhoods, cuisines;
+var map;
+var markers = [];
 
 /*
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  fetchNeighborhoods();
-  fetchCuisines();
+ fetchNeighborhoods();
+ fetchCuisines();
 });
 
 /*
@@ -81,6 +79,7 @@ window.initMap = () => {
     scrollwheel: false
   });
   updateRestaurants();
+  DBHelper.pushUpdates();
 }
 
 /*
@@ -151,6 +150,18 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  // Inserting favorite here
+  const favButton = document.createElement('button');
+  favButton.className = 'favButton';
+  let isFavorite = (restaurant.is_favorite && restaurant.is_favorite.toString() === "true") ? true : false;
+  //console.log(`${restaurant.name}, ${restaurant.is_favorite}`);
+  favButton.setAttribute('aria-pressed', isFavorite);
+  favButton.setAttribute('aria-label', `Make ${restaurant.name} a favorite!`);
+  favButton.innerHTML = isFavorite ? '&#9829;' : '&#9825;'; 
+  favButton.onclick = event => favoriteClicked(restaurant, favButton);
+
+  li.append(favButton);
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
@@ -165,6 +176,35 @@ createRestaurantHTML = (restaurant) => {
   li.append(more)
 
   return li
+}
+
+/*
+ * Handler for favorite button being clicked
+ */
+favoriteClicked = (restaurant, button) => {
+  //console.log(`Data: ${restaurant.name}, ${restaurant.is_favorite}, ${button}`);
+  //console.log(`favClicked. Entering state: ${button.getAttribute("aria-pressed")}`);
+
+  // Get current fav state
+  let fav = (button.getAttribute("aria-pressed") && button.getAttribute("aria-pressed") === "true") ? true : false;
+
+  let requestURL = `${DBHelper.DATABASE_URL}/${restaurant.id}/?is_favorite=${!fav}`;
+  let requestMethod = "PUT";
+  DBHelper.updateRestaurantCache(restaurant.id, {"is_favorite": !fav});
+  DBHelper.addToUpdateQueue(requestURL, requestMethod);
+  //return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${!fav}`, {method: 'PUT'})
+    //.then(response => {
+    //  if(!response.ok) return Promise.reject("Favorite could not be updated.");
+    //  return response.json();
+    //}).then(updatedRestaurant => {
+      // Update restaurant on idb
+      // dbPromise.putRestaurants(updatedRestaurant, true);
+      // Change state of toggle button
+      //console.log(`Exiting state: ${!fav}`);
+      button.setAttribute('aria-pressed', !fav);
+      button.innerHTML = !fav ? '&#9829;' : '&#9825;'; 
+      button.onclick = event => favoriteClicked(restaurant, button);
+    //});
 }
 
 /*
